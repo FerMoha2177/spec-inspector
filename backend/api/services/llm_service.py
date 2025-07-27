@@ -65,43 +65,47 @@ class LLMService:
                 messages=[
                     {
                         "role": "user", 
-                "content": (
-                    "You are an OpenAPI 3.1.0 expert. Given the following input YAML spec, analyze and correct it.\n"
-                    "- Fix structural errors\n"
-                    "- Enhance metadata, schemas, tags, security\n"
-                    "- Return valid, complete YAML\n"
-                    "- Include comments summarizing improvements\n\n"
-                    
-                    "For the corrected spec:\n"
-                    "- At the Top of the spec, add a pretty multi-line comments explaining the changes made\n"
-                    "- Add inline comments (using #) explaining what was fixed or added\n"
-                    "- Use comments to highlight best practices\n"
-                    "- Comment on any assumptions made during corrections\n"
-                    "- Keep original working code uncommented\n\n"
-
-                    "Must-have:\n"
-                    "- At the Top of the spec, add a pretty multi-line comments explaining the changes made"
-                    "- openapi version compliant with 3.1.0 specifcations\n"
-                    "- info.title\n"
-                    "- info.version\n"
-                    "- paths (can be empty)\n"
-                    "- servers\n"
-                    "- components.schemas\n"
-                    "- security\n"
-                    "- tags\n"
-                    "- info.description\n"
-                    "- info.termsOfService\n"
-                    "- info.contact\n"
-                    "- info.license\n"
-                    "Format your response as:\n"
-                    "## SUGGESTIONS:\n"
-                    "[List specific issues and recommendations in  pretty multi-line comments explaining the changes made bulleted]\n\n"
-                    "## CORRECTED SPEC:\n"
-                    "```yaml\n"
-                    "[Complete corrected YAML file with inline comments]\n"
-                    "```\n\n"
-                    f"File to analyze:\n```yaml\n{content_str}\n```"
-                )
+                        "content": (
+                            "You are an OpenAPI 3.1.0 expert. Analyze and correct the following YAML specification.\n\n"
+                            
+                            "REQUIREMENTS:\n"
+                            "- Fix all structural errors and validation issues\n"
+                            "- Enhance metadata, schemas, tags, and security\n"
+                            "- Return complete, valid OpenAPI 3.1.0 YAML\n"
+                            "- Add helpful inline comments explaining fixes\n\n"
+                            
+                            "MUST INCLUDE:\n"
+                            "- openapi: 3.1.0\n"
+                            "- info.title, info.version, info.description\n"
+                            "- info.termsOfService, info.contact, info.license\n"
+                            "- servers (at least one)\n"
+                            "- paths (can be empty object)\n"
+                            "- components.schemas\n"
+                            "- components.securitySchemes\n"
+                            "- security (global)\n"
+                            "- tags\n\n"
+                            
+                            "FORMATTING:\n"
+                            "- Start with multi-line comment block explaining changes\n"
+                            "- Add inline comments for fixes and improvements\n"
+                            "- Use proper YAML structure (no duplicate keys)\n"
+                            "- Include validation constraints where appropriate\n\n"
+                            
+                            "CRITICAL YAML RULES:\n"
+                            "- NEVER use duplicate keys at the same level (e.g., two 'schemas:' in components)\n"
+                            "- All schemas must be in ONE 'schemas:' section under components\n"
+                            "- Put Error schema with other schemas, not separately\n"
+                            "- Valid structure: components: { schemas: { User: ..., Error: ... }, responses: ..., securitySchemes: ... }\n\n"
+                            
+                            "Format your response as:\n"
+                            "## SUGGESTIONS:\n"
+                            "[Bulleted list of specific issues found and how they were fixed]\n\n"
+                            "## CORRECTED SPEC:\n"
+                            "```yaml\n"
+                            "[Complete corrected YAML file]\n"
+                            "```\n\n"
+                            f"File to analyze:\n```yaml\n{content_str}\n```"
+                        )
                     }
                 ]
             )

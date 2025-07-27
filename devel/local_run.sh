@@ -191,7 +191,7 @@ show_logs() {
 
 # Function to show help
 show_help() {
-    echo "Heart Disease ML API - Local Development Runner"
+    echo "Spec Inspector API - Local Development Runner"
     echo
     echo "Usage: $0 [COMMAND]"
     echo
@@ -222,7 +222,7 @@ show_help() {
 main() {
     local command=${1:-"start"}
     
-    echo "=== Heart Disease ML API - Local Development ==="
+    echo "=== Spec Inspector API - Local Development ==="
     echo "Working from: $PROJECT_ROOT"
     echo "Docker Compose file: $COMPOSE_FILE"
     echo
