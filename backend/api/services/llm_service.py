@@ -65,19 +65,26 @@ class LLMService:
                 messages=[
                     {
                         "role": "user", 
-                        "content": (
-                            "Analyze this OpenAPI file and provide:\n"
-                            "1. A list of specific issues and suggestions for improvement\n"
-                            "2. The complete corrected OpenAPI 3.1 specification\n\n"
-                            "Format your response as:\n"
-                            "## SUGGESTIONS:\n"
-                            "[List specific issues and recommendations]\n\n"
-                            "## CORRECTED SPEC:\n"
-                            "```yaml\n"
-                            "[Complete corrected YAML file with all the suggestions addressed with inline comments # supported by OpenAPI 3.1 yaml formatting]\n"
-                            "```\n\n"
-                            f"File to analyze:\n```yaml\n{content_str}\n```"
-                        )
+                "content": (
+                    "Analyze this OpenAPI file and provide:\n"
+                    "1. A list of specific issues and suggestions for improvement\n"
+                    "2. The complete corrected OpenAPI 3.1 specification WITH inline comments explaining the fixes\n\n"
+                    
+                    "For the corrected spec:\n"
+                    "- Add inline comments (using #) explaining what was fixed or added\n"
+                    "- Use comments to highlight best practices\n"
+                    "- Comment on any assumptions made during corrections\n"
+                    "- Keep original working code uncommented\n\n"
+                    
+                    "Format your response as:\n"
+                    "## SUGGESTIONS:\n"
+                    "[List specific issues and recommendations]\n\n"
+                    "## CORRECTED SPEC:\n"
+                    "```yaml\n"
+                    "[Complete corrected YAML file with inline comments]\n"
+                    "```\n\n"
+                    f"File to analyze:\n```yaml\n{content_str}\n```"
+                )
                     }
                 ]
             )
