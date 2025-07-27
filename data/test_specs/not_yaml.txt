@@ -1,0 +1,7 @@
+This is just a plain text file
+It's not YAML at all
+{
+  "this": "might look like JSON",
+  "but": "it's in a .txt file"
+}
+Some random content here...

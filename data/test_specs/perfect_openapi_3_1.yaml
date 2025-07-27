@@ -1,0 +1,308 @@
+openapi: 3.1.0
+info:
+  title: User Management API
+  description: A comprehensive API for managing users in the system
+  version: 1.2.0
+  contact:
+    name: API Support Team
+    email: support@example.com
+    url: https://example.com/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+
+paths:
+  /users:
+    get:
+      summary: List all users
+      description: Retrieves a paginated list of all users in the system
+      operationId: listUsers
+      tags:
+        - Users
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of users to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Number of users to skip
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Successfully retrieved list of users
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                  - total
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  total:
+                    type: integer
+                    minimum: 0
+                  limit:
+                    type: integer
+                    minimum: 1
+                  offset:
+                    type: integer
+                    minimum: 0
+                additionalProperties: false
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - BearerAuth: []
+
+    post:
+      summary: Create a new user
+      description: Creates a new user with the provided information
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        description: User information for creation
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request - invalid user data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - BearerAuth: []
+
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      description: Retrieves a specific user by their unique identifier
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          description: Unique identifier of the user
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Successfully retrieved user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - BearerAuth: []
+
+components:
+  schemas:
+    User:
+      type: object
+      description: User object containing all user information
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+          minimum: 1
+          example: 123
+        email:
+          type: string
+          description: User's email address
+          format: email
+          maxLength: 255
+          example: "john.doe@example.com"
+        firstName:
+          type: string
+          description: User's first name
+          minLength: 1
+          maxLength: 50
+          example: "John"
+        lastName:
+          type: string
+          description: User's last name
+          minLength: 1
+          maxLength: 50
+          example: "Doe"
+        phoneNumber:
+          type: string
+          description: User's phone number
+          pattern: '^\+?[1-9]\d{1,14}$'
+          example: "+1234567890"
+        dateOfBirth:
+          type: string
+          description: User's date of birth
+          format: date
+          example: "1990-01-15"
+        isActive:
+          type: boolean
+          description: Whether the user account is active
+          default: true
+          example: true
+        createdAt:
+          type: string
+          description: Timestamp when the user was created
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+        updatedAt:
+          type: string
+          description: Timestamp when the user was last updated
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+      additionalProperties: false
+
+    CreateUserRequest:
+      type: object
+      description: Request payload for creating a new user
+      required:
+        - email
+        - firstName
+        - lastName
+      properties:
+        email:
+          type: string
+          description: User's email address
+          format: email
+          maxLength: 255
+          example: "jane.doe@example.com"
+        firstName:
+          type: string
+          description: User's first name
+          minLength: 1
+          maxLength: 50
+          example: "Jane"
+        lastName:
+          type: string
+          description: User's last name
+          minLength: 1
+          maxLength: 50
+          example: "Doe"
+        phoneNumber:
+          type: string
+          description: User's phone number (optional)
+          pattern: '^\+?[1-9]\d{1,14}$'
+          example: "+1234567890"
+        dateOfBirth:
+          type: string
+          description: User's date of birth (optional)
+          format: date
+          example: "1992-03-20"
+      additionalProperties: false
+
+    Error:
+      type: object
+      description: Error response object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        message:
+          type: string
+          description: Human-readable error message
+          minLength: 1
+          maxLength: 500
+          example: "Invalid request parameters"
+        details:
+          type: string
+          description: Additional error details (optional)
+          maxLength: 1000
+          example: "The 'email' field must be a valid email address"
+        timestamp:
+          type: string
+          description: Timestamp when the error occurred
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+      additionalProperties: false
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authentication
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Users
+    description: Operations related to user management

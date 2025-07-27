@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
 # Import from relative modules
-from api.routes import health 
+from api.routes import health, inspector
 from config.logging import setup_logging
 
 # Setup logging and load environment
@@ -51,6 +51,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(health.router, prefix="/api/v1", tags=["health"])
+app.include_router(inspector.router, prefix="/api/v1", tags=["inspector"])
 
 @app.get("/")
 async def root():

@@ -1,9 +1,9 @@
 .venv
 .env
 .env.production
-
+venv
 # Data and logs
-data
+data/uploads
+data/processed
+data/temp
 logs
-
-
