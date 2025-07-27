@@ -13,12 +13,14 @@ services:
     environment:
       # Only override what's different in Docker
       - API_HOST=0.0.0.0
+      - PYTHONPATH=/app
     volumes:
       - ../data:/app/data
       - ../logs:/app/logs
-    # depends_on:
-    #   mongodb:
-    #     condition: service_healthy
+      # Mount source code for development (enables live reload)
+      - ../backend/api:/app/api
+      - ../backend/config:/app/config
+      - ../backend/utils:/app/utils
     networks:
       - spec_inspector
     healthcheck:
@@ -27,10 +29,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-# volumes:
-#   mongodb_data:
-#     driver: local
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 networks:
   spec_inspector:

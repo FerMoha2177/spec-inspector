@@ -1,3 +1,9 @@
-venv
+.venv
 .env
 .env.production
+
+# Data and logs
+data
+logs
+
+

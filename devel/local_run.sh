@@ -111,7 +111,7 @@ create_directories() {
     # Change to project root
     cd "$PROJECT_ROOT"
     
-    directories=("logs")
+    directories=("logs" "data/uploads" "data/processed" "data/temp" )
     
     for dir in "${directories[@]}"; do
         if [ ! -d "$dir" ]; then

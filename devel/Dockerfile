@@ -17,17 +17,20 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
-COPY ../backend/requirements.txt .
+COPY backend/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy the entire backend directory to /app
+COPY backend/ .
+
+# Copy .env file if it exists
+COPY .env* ./
 
 # Create necessary directories
-RUN mkdir -p models logs data
+RUN mkdir -p logs data
 
 # Expose port
 EXPOSE 8000
@@ -36,5 +39,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/api/v1/health || exit 1
 
-# Default command
-CMD ["python", "-m", "../backend/api/api.main"]
+# Run the application using uvicorn directly
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
