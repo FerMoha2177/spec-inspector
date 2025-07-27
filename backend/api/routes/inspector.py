@@ -1,7 +1,7 @@
 import os
 import sys 
 from pydantic import BaseModel
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Response
 from datetime import datetime
 from typing import Optional
 import yaml
@@ -76,12 +76,24 @@ async def inspect(file: UploadFile = File(...), llm_service: LLMService = Depend
         logger.error(f"LLM correction failed: {e}")
         raise HTTPException(status_code=400, detail=f"LLM correction error: {str(e)}")
     
-    return {
-        "status": "success",
-        "filename": file.filename,
-        "file_size": len(file_content),
-        "timestamp": datetime.utcnow().isoformat(),
-        "validation_passed": is_valid,
-        "suggestions": corrections.get("suggestions", ""),      
-        "corrected_spec": corrections.get("corrected_spec", "") 
-    }
+    name_without_ext = file.filename.rsplit('.', 1)[0] if '.' in file.filename else file.filename
+    corrected_filename = f"{name_without_ext}_corrected.yaml"
+    
+    # return {
+    #     "status": "success",
+    #     "filename": file.filename,
+    #     "corrected_filename": corrected_filename,  # NEW: suggests name for saving
+    #     "file_size": len(file_content),
+    #     "timestamp": datetime.utcnow().isoformat(),
+    #     "validation_passed": is_valid,
+    #     "issues_found": len(corrections.get("suggestions", "").split('\n')) if corrections.get("suggestions") else 0,  # NEW: quick count
+    #     "suggestions": corrections.get("suggestions", ""),      
+    #     "corrected_spec": corrections.get("corrected_spec", ""),
+    #     "usage_tip": "Copy the 'corrected_spec' content and save it as a .yaml file"  # NEW: helpful hint
+    # }
+    return Response(
+                content=corrections["corrected_spec"],
+                status_code=200,
+                media_type="application/x-yaml",
+                headers={"Content-Disposition": f"attachment; filename=corrected-{file.filename}"}
+            )

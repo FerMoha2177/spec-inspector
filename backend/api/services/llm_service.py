@@ -74,7 +74,7 @@ class LLMService:
                             "[List specific issues and recommendations]\n\n"
                             "## CORRECTED SPEC:\n"
                             "```yaml\n"
-                            "[Complete corrected YAML file]\n"
+                            "[Complete corrected YAML file with all the suggestions addressed with inline comments # supported by OpenAPI 3.1 yaml formatting]\n"
                             "```\n\n"
                             f"File to analyze:\n```yaml\n{content_str}\n```"
                         )
