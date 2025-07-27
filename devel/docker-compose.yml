@@ -1,0 +1,37 @@
+services:
+  # FastAPI Application  
+  api:
+    build:
+      context: ..
+      dockerfile: devel/Dockerfile
+    container_name: spec_inspector_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env  # Read ALL variables from .env
+    environment:
+      # Only override what's different in Docker
+      - API_HOST=0.0.0.0
+    volumes:
+      - ../data:/app/data
+      - ../logs:/app/logs
+    # depends_on:
+    #   mongodb:
+    #     condition: service_healthy
+    networks:
+      - spec_inspector
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# volumes:
+#   mongodb_data:
+#     driver: local
+
+networks:
+  spec_inspector:
+    driver: bridge
