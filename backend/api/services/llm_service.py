@@ -1,49 +1,178 @@
 """
-LLM Service
-
-This service is responsible for interacting with the LLM to get corrections for the OpenAPI 3.1 specification.
+LLM Service with Claude using Messages API
 """
 from config.logging import setup_logging
 from dotenv import load_dotenv
 import logging
 import os
-import sys
-from openai import OpenAI
-import claude
-
+from anthropic import Anthropic
 
 load_dotenv()
-
 setup_logging()
 logger = logging.getLogger(__name__)
 
-claude_client = claude.Client(api_key=os.getenv("CLAUDE_API_KEY"))
-
 class LLMService:
     def __init__(self):
-        self.client = claude.Client(api_key=os.getenv("CLAUDE_API_KEY"))
-    
+        self.anthropic_client = None
+        
+        # Initialize Claude if API key available
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if api_key:
+            try:
+                self.anthropic_client = Anthropic(api_key=api_key)
+                logger.info("Claude client initialized successfully")
+                logger.info(f"Client has messages: {hasattr(self.anthropic_client, 'messages')}")
+                
+            except Exception as e:
+                logger.error(f"Failed to initialize Anthropic client: {e}")
+                self.anthropic_client = None
+        else:
+            logger.warning("No ANTHROPIC_API_KEY found - LLM service may not work")
 
-    def get_corrections(self, file_content: bytes) -> str:
+    def calculate_max_tokens(self, input_content: str) -> int:
+        """Calculate appropriate max tokens based on input size"""
+        input_tokens = len(input_content) // 4  # Rough estimate: 4 chars = 1 token
+        
+        if input_tokens < 2000:
+            return 4000   # Small API
+        elif input_tokens < 10000:
+            return 16000  # Medium API  
+        elif input_tokens < 30000:
+            return 32000  # Large API
+        else:
+            return 50000  # Enterprise API
+
+    def get_corrections(self, file_content: bytes) -> dict:
         """
-        Get corrections for the OpenAPI 3.1 specification.
+        Get both suggestions and corrected spec for the OpenAPI file.
+        Returns dict with 'suggestions' and 'corrected_spec'
         """
+        if not self.anthropic_client:
+            return {
+                "suggestions": "Error: No Claude API key configured or client initialization failed",
+                "corrected_spec": ""
+            }
+            
         try:
-            response = self.client.chat.completions.create(
-                model="claude-3-5-sonnet-20240620",
+            content_str = file_content.decode('utf-8')
+            max_tokens = self.calculate_max_tokens(content_str)
+            
+            logger.info(f"Sending request to Claude with max_tokens: {max_tokens}")
+            
+            response = self.anthropic_client.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=max_tokens,
                 messages=[
                     {
-                        "role": "user",
+                        "role": "user", 
                         "content": (
-                            "Correct the following OpenAPI 3.1 specification file "
-                            "to be valid OpenAPI 3.1. The file is a YAML file "
-                            "encoded in UTF-8. Please include the full file content with corrections "
-                            "in your response.\n\n" + file_content.decode('utf-8')
+                            "Analyze this OpenAPI file and provide:\n"
+                            "1. A list of specific issues and suggestions for improvement\n"
+                            "2. The complete corrected OpenAPI 3.1 specification\n\n"
+                            "Format your response as:\n"
+                            "## SUGGESTIONS:\n"
+                            "[List specific issues and recommendations]\n\n"
+                            "## CORRECTED SPEC:\n"
+                            "```yaml\n"
+                            "[Complete corrected YAML file]\n"
+                            "```\n\n"
+                            f"File to analyze:\n```yaml\n{content_str}\n```"
                         )
                     }
                 ]
             )
-            return response.choices[0].message.content
+            
+            full_response = response.content[0].text
+            logger.info("Successfully received response from Claude")
+            
+            # Parse the response to separate suggestions and corrected spec
+            return self._parse_claude_response(full_response)
+            
         except Exception as e:
-            logger.error(f"Could not get corrections: {e}")
-            return ""
+            logger.error(f"Could not get corrections from Claude: {e}")
+            return {
+                "suggestions": f"Error: Could not analyze file - {str(e)}",
+                "corrected_spec": ""
+            }
+
+    def _parse_claude_response(self, full_response: str) -> dict:
+        """
+        Parse Claude's response to extract suggestions and corrected spec
+        """
+        try:
+            if "## SUGGESTIONS:" in full_response and "## CORRECTED SPEC:" in full_response:
+                parts = full_response.split("## CORRECTED SPEC:")
+                suggestions = parts[0].replace("## SUGGESTIONS:", "").strip()
+                corrected_spec = parts[1].strip()
+                
+                # Extract YAML from code block if present
+                if "```yaml" in corrected_spec:
+                    yaml_start = corrected_spec.find("```yaml") + 7
+                    yaml_end = corrected_spec.find("```", yaml_start)
+                    if yaml_end != -1:
+                        corrected_spec = corrected_spec[yaml_start:yaml_end].strip()
+                    else:
+                        corrected_spec = corrected_spec[yaml_start:].strip()
+                        
+                return {
+                    "suggestions": suggestions,
+                    "corrected_spec": corrected_spec
+                }
+            
+            # Fallback if format not followed
+            logger.warning("Claude response did not follow expected format")
+            return {
+                "suggestions": "AI response format error - manual review needed",
+                "corrected_spec": full_response
+            }
+            
+        except Exception as e:
+            logger.error(f"Error parsing Claude response: {e}")
+            return {
+                "suggestions": f"Error parsing response: {str(e)}",
+                "corrected_spec": full_response
+            }
+
+    def test_connection(self) -> dict:
+        """
+        Test the Claude connection with a simple request
+        """
+        if not self.anthropic_client:
+            return {"success": False, "error": "No Claude client available"}
+        
+        try:
+            response = self.anthropic_client.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=100,
+                messages=[{"role": "user", "content": "Hello, please respond with 'Claude is working!'"}]
+            )
+            
+            return {
+                "success": True, 
+                "response": response.content[0].text.strip(),
+                "model": "claude-3-5-sonnet-20241022"
+            }
+            
+        except Exception as e:
+            logger.error(f"Claude connection test failed: {e}")
+            return {"success": False, "error": str(e)}
+
+
+    def get_service_info(self) -> dict:
+        """
+        Get information about the LLM service status
+        """
+        try:
+            import importlib.metadata
+            anthropic_version = importlib.metadata.version('anthropic')
+        except Exception:
+            anthropic_version = "Unknown"
+        
+        return {
+            "service_name": "LLM Service",
+            "claude_available": self.anthropic_client is not None,
+            "api_key_configured": bool(os.getenv("ANTHROPIC_API_KEY")),
+            "anthropic_version": anthropic_version,  # ✅ Actual version
+            "supported_models": ["claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022"],
+            "max_tokens_supported": 50000
+        }

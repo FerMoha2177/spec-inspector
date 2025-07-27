@@ -8,6 +8,7 @@ import yaml
 from dotenv import load_dotenv
 import logging
 from utils.validators import validate_file
+from api.dependencies import get_llm_service  # ✅ Correct path
 from api.services.llm_service import LLMService
 
 from config.logging import setup_logging
@@ -26,7 +27,7 @@ PROCESSED_DIR = os.getenv("PROCESSED_DIR", "./processed")
 MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE", "10485760"))  # 10MB default
 
 @router.post("/inspect")
-async def inspect(file: UploadFile = File(...)):
+async def inspect(file: UploadFile = File(...), llm_service: LLMService = Depends(get_llm_service)):
     """
     Inspect and validate OpenAPI specification file
     Returns validation results and corrections if needed
@@ -44,12 +45,12 @@ async def inspect(file: UploadFile = File(...)):
     if file.size and file.size > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=400, 
-            detail=f"File size must be less than {MAX_FILE_SIZE/1024/1024}MB"
+            detail=f"File size must be less than {MAX_FILE_SIZE/1024/1024:.1f}MB"
         )
 
     # Read file content
     try:
-        file_content = await file.read()  # ✅ Use await for async read
+        file_content = await file.read()
         if not file_content:
             raise HTTPException(status_code=400, detail="File is empty")
             
@@ -57,27 +58,20 @@ async def inspect(file: UploadFile = File(...)):
         logger.error(f"Failed to read file: {e}")
         raise HTTPException(status_code=400, detail=f"Failed to read file: {str(e)}")
 
-    # Validate file structure using your validator
+    # Validate file structure
     try:
-        is_valid = validate_file(file_content)  # ✅ Pass bytes directly
+        is_valid = validate_file(file_content)
         if not is_valid:
-            raise HTTPException(status_code=400, detail="File structure is not valid OpenAPI format")
-
+            logger.warning("Basic validation failed, proceeding with AI correction anyway")
 
     except Exception as e:
         logger.error(f"Validation failed: {e}")
-        raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
-
-    # TODO: Add more validation layers here
-    # Layer 1: YAML format ✅ (handled above)
-    # Layer 2: Basic metadata ✅ (in validate_file)
-    # Layer 3: OpenAPI detection
-    # Layer 4: Version-specific validation
-    # Layer 5: Claude correction
+        is_valid = False
+        logger.warning("Validation error, proceeding with AI correction anyway")
     
+    # Use injected LLM service
     try:    
-        llm_service = LLMService()
-        corrections = llm_service.get_corrections(file_content)
+        corrections = llm_service.get_corrections(file_content)  # ✅ Use injected service
     except Exception as e:
         logger.error(f"LLM correction failed: {e}")
         raise HTTPException(status_code=400, detail=f"LLM correction error: {str(e)}")
@@ -86,7 +80,8 @@ async def inspect(file: UploadFile = File(...)):
         "status": "success",
         "filename": file.filename,
         "file_size": len(file_content),
-        "timestamp": datetime.now(datetime.timezone.utc).isoformat(),
+        "timestamp": datetime.utcnow().isoformat(),
         "validation_passed": is_valid,
-        "corrections": corrections,
+        "suggestions": corrections.get("suggestions", ""),      # ✅ Separate fields
+        "corrected_spec": corrections.get("corrected_spec", "")  # ✅ As recruiter wanted
     }

@@ -11,6 +11,22 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+
+# def calculate_max_tokens(input_content: str) -> int:
+#     """Calculate appropriate max tokens based on input size"""
+#     input_tokens = len(input_content) // 4  # Rough estimate: 4 chars = 1 token
+#     ret = 0
+#     if input_tokens < 2000:
+#         ret = 4000   # Small API
+#     elif input_tokens < 10000:
+#         ret =  16000  # Medium API  
+#     elif input_tokens < 30000:
+#         ret = 32000  # Large API
+#     else:
+#         ret = 50000  # Enterprise API (maybe chunk it from here??)
+    
+#     return ret
+
 def validate_file(file_content: bytes) -> bool:
     """
     Validate that file content contains basic OpenAPI structure
