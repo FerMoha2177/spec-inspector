@@ -29,7 +29,7 @@ async def health_check():
         "message": "SpecInspector API"
     }
 
-@router.get("/health/detailed")  # ✅ Fixed typo: "detailed" not "deatiled"
+@router.get("/health/detailed")
 async def detailed_health_check(llm_service: LLMService = Depends(get_llm_service)):
     """
     Detailed Health Endpoint for displaying LLM service data

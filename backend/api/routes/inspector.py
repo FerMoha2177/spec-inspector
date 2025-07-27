@@ -8,7 +8,7 @@ import yaml
 from dotenv import load_dotenv
 import logging
 from utils.validators import validate_file
-from api.dependencies import get_llm_service  # ✅ Correct path
+from api.dependencies import get_llm_service
 from api.services.llm_service import LLMService
 
 from config.logging import setup_logging
@@ -71,7 +71,7 @@ async def inspect(file: UploadFile = File(...), llm_service: LLMService = Depend
     
     # Use injected LLM service
     try:    
-        corrections = llm_service.get_corrections(file_content)  # ✅ Use injected service
+        corrections = llm_service.get_corrections(file_content)  
     except Exception as e:
         logger.error(f"LLM correction failed: {e}")
         raise HTTPException(status_code=400, detail=f"LLM correction error: {str(e)}")
@@ -82,6 +82,6 @@ async def inspect(file: UploadFile = File(...), llm_service: LLMService = Depend
         "file_size": len(file_content),
         "timestamp": datetime.utcnow().isoformat(),
         "validation_passed": is_valid,
-        "suggestions": corrections.get("suggestions", ""),      # ✅ Separate fields
-        "corrected_spec": corrections.get("corrected_spec", "")  # ✅ As recruiter wanted
+        "suggestions": corrections.get("suggestions", ""),      
+        "corrected_spec": corrections.get("corrected_spec", "") 
     }

@@ -20,14 +20,38 @@ This is a minimal, production-ready API for validating and correcting OpenAPI 3.
 
 - No unnecessary features. Just upload, validate, and fix.
 - No file storage, buckets, or downloads. All results are returned in the API response.
-- Clean, recruiter-friendly output: suggestions and the fixed spec.
+- Clean output: suggestions and the fixed spec.
 - Works with Postman or any HTTP client.
 
 ## Usage
 
+### Main Endpoint
+
 - **POST `/inspect`**
   - Upload your OpenAPI YAML file as form-data (key: `file`)
   - Response: JSON with `suggestions` and `corrected_spec`
+
+### Health Check Endpoints
+
+- **GET `/api/v1/health`**
+  - Returns basic health status of the API (200 OK if running)
+
+- **GET `/api/v1/health/quick-test`**
+  - Checks if the Claude LLM is reachable and responding
+  - Returns a quick status and timestamp
+
+- **GET `/api/v1/health/detailed`**
+  - Returns detailed information about the API, environment, and LLM service status
+
+#### Example health check response
+
+```json
+{
+  "status": "healthy",
+  "timestamp": "2025-07-27T06:34:00Z",
+  "message": "SpecInspector API"
+}
+```
 
 ### Example response
 

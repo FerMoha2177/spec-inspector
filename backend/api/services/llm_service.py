@@ -172,7 +172,7 @@ class LLMService:
             "service_name": "LLM Service",
             "claude_available": self.anthropic_client is not None,
             "api_key_configured": bool(os.getenv("ANTHROPIC_API_KEY")),
-            "anthropic_version": anthropic_version,  # ✅ Actual version
+            "anthropic_version": anthropic_version,
             "supported_models": ["claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022"],
             "max_tokens_supported": 50000
         }
