@@ -1,0 +1,571 @@
+{
+	"info": {
+		"_postman_id": "37c1b4db-ba6a-4bd5-9a2a-cfcf5b0a62da",
+		"name": "Heart Disease Prediction API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26336690"
+	},
+	"item": [
+		{
+			"name": "LOCAL",
+			"item": [
+				{
+					"name": "Predict",
+					"item": [
+						{
+							"name": "Like Has Heart Disease",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 55,\n  \"sex\": 1,\n  \"cp\": 3,\n  \"trestbps\": 130,\n  \"chol\": 250,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 140,\n  \"exang\": 1,\n  \"oldpeak\": 1.5,\n  \"slope\": 1,\n  \"ca\": 1,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/v1/predict",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Low Risk",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 25,\n  \"sex\": 0,\n  \"cp\": 0,\n  \"trestbps\": 110,\n  \"chol\": 180,\n  \"fbs\": 74,\n  \"restecg\": 0,\n  \"thalach\": 190,\n  \"exang\": 0,\n  \"oldpeak\": 0.0,\n  \"slope\": 0,\n  \"ca\": 0,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/v1/predict",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Impossible Low",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 18,\n  \"sex\": 0,\n  \"cp\": 0,\n  \"trestbps\": 110,\n  \"chol\": 180,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 190,\n  \"exang\": 0,\n  \"oldpeak\": 0.0,\n  \"slope\": 0,\n  \"ca\": 0,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/v1/predict",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Ultra High Risk",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 70,\n  \"sex\": 1,\n  \"cp\": 3,\n  \"trestbps\": 180,\n  \"chol\": 350,\n  \"fbs\": 1,\n  \"restecg\": 1,\n  \"thalach\": 100,\n  \"exang\": 1,\n  \"oldpeak\": 4.0,\n  \"slope\": 2,\n  \"ca\": 3,\n  \"thal\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/v1/predict",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "String format",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"age\": 29,\n    \"sex\": 0,\n    \"cp\": 2,\n    \"trestbps\": 130,\n    \"chol\": 204,\n    \"fbs\": 0,\n    \"restecg\": 0,\n    \"thalach\": 202,\n    \"exang\": 0,\n    \"oldpeak\": 0.0,\n    \"slope\": 0,\n    \"ca\": 0,\n    \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/v1/predict",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dummy Prediction",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 55,\n  \"sex\": 1,\n  \"cp\": 3,\n  \"trestbps\": 130,\n  \"chol\": 250,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 140,\n  \"exang\": 1,\n  \"oldpeak\": 1.5,\n  \"slope\": 1,\n  \"ca\": 1,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/v1/dummy-predict",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"dummy-predict"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Checks",
+					"item": [
+						{
+							"name": "Health Endpoint",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseURL}}/api/v1/health",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DB health Endpoint",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/v1/health/detailed",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"health",
+										"detailed"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Endpoints for checking Health, DB-Health, Model health"
+				}
+			]
+		},
+		{
+			"name": "PROD",
+			"item": [
+				{
+					"name": "Predict",
+					"item": [
+						{
+							"name": "Like Has Heart Disease",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 55,\n  \"sex\": 1,\n  \"cp\": 3,\n  \"trestbps\": 130,\n  \"chol\": 250,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 140,\n  \"exang\": 1,\n  \"oldpeak\": 1.5,\n  \"slope\": 1,\n  \"ca\": 1,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/predict",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Low Risk",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 25,\n  \"sex\": 0,\n  \"cp\": 0,\n  \"trestbps\": 110,\n  \"chol\": 180,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 190,\n  \"exang\": 0,\n  \"oldpeak\": 0.0,\n  \"slope\": 0,\n  \"ca\": 0,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/predict",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Impossible Low",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 18,\n  \"sex\": 0,\n  \"cp\": 0,\n  \"trestbps\": 130,\n  \"chol\": 90,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 200,\n  \"exang\": 0,\n  \"oldpeak\": 0.0,\n  \"slope\": 0,\n  \"ca\": 0,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/predict",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Ultra High Risk",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 70,\n  \"sex\": 1,\n  \"cp\": 3,\n  \"trestbps\": 180,\n  \"chol\": 350,\n  \"fbs\": 1,\n  \"restecg\": 1,\n  \"thalach\": 100,\n  \"exang\": 1,\n  \"oldpeak\": 4.0,\n  \"slope\": 2,\n  \"ca\": 3,\n  \"thal\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/predict",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "String format",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 29,\n  \"sex\": 0,\n  \"cp\": 2,\n  \"trestbps\": 130,\n  \"chol\": 204,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 202,\n  \"exang\": 0,\n  \"oldpeak\": 0.0,\n  \"slope\": 0,\n  \"ca\": 0,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/predict",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dummy Prediction",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"age\": 55,\n  \"sex\": 1,\n  \"cp\": 3,\n  \"trestbps\": 130,\n  \"chol\": 250,\n  \"fbs\": 0,\n  \"restecg\": 0,\n  \"thalach\": 140,\n  \"exang\": 1,\n  \"oldpeak\": 1.5,\n  \"slope\": 1,\n  \"ca\": 1,\n  \"thal\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/predict",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"predict"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Checks",
+					"item": [
+						{
+							"name": "Health Endpoint",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/health",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DB health Endpoint",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://heart-disease-ml-pipeline.onrender.com/api/v1/health/detailed",
+									"protocol": "https",
+									"host": [
+										"heart-disease-ml-pipeline",
+										"onrender",
+										"com"
+									],
+									"path": [
+										"api",
+										"v1",
+										"health",
+										"detailed"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Endpoints for checking Health, DB-Health, Model health"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8000",
+			"type": "default"
+		}
+	]
+}

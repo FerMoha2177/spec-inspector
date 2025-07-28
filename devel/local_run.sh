@@ -140,7 +140,7 @@ run_tests() {
     print_status "Running tests..."
     
     # Wait for services to be ready
-    sleep 10
+    sleep 5
     
     # Run health checks
     print_status "Checking API health..."

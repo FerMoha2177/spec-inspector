@@ -41,6 +41,12 @@ class LLMService:
             return 32000  # Large API
         else:
             return 50000  # Enterprise API
+    
+    def find_duplicate(yaml_content: str):
+        pass
+
+    def validate_structure(yaml_structure: str):
+        pass
 
     def get_corrections(self, file_content: bytes) -> dict:
         """
@@ -66,7 +72,7 @@ class LLMService:
                     {
                         "role": "user", 
                         "content": (
-                            "You are an OpenAPI 3.1.0 expert. Analyze and correct the following YAML specification.\n\n"
+                            "You are an OpenAPI 3.1.0 Specification expert. Analyze and correct the following YAML specification as Per OpenAPI 3.1.0 Specification.\n\n"
                             
                             "REQUIREMENTS:\n"
                             "- Fix all structural errors and validation issues\n"
